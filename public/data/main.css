@@ -1,0 +1,77 @@
+body {
+    overflow: auto;
+}
+.grid .r {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: 200vw;
+    height: 2px;
+    z-index: 999;
+    background: #a12424;
+    transform: rotateZ(30deg) translate(-50%, -50%);
+    transform-origin: top left;
+}
+
+.grid .q {
+    position: fixed;
+    top: 0;
+    left: calc(50% - 1px);
+    right: calc(50% - 1px);
+    bottom: 0;
+    z-index: 999;
+    background: black;
+}
+
+.grid .x {
+    position: fixed;
+    top: calc(50% - 1px);
+    left: 0;
+    right: 0;
+    bottom: calc(50% - 1px);
+    z-index: 999;
+    background: #004eff;
+}
+
+.map {
+    position: absolute;
+    left: 50%;
+    bottom: 50%;
+}
+
+.hex {
+    --s: 50px;
+    --x: 0px;
+    --y: 0px;
+    position: absolute;
+    left: var(--x);
+    bottom: var(--y);
+    width: var(--s);
+    height: calc(var(--s) * 1.1547);
+    display: inline-block;
+    font-size: initial;
+    clip-path: polygon(0% 25%, 0% 75%, 50% 100%, 100% 75%, 100% 25%, 50% 0%);
+    background: hotpink;
+    /*border: rebeccapurple solid 1px;*/
+    transform: translate(-50%, 50%) rotateZ(90deg);
+    /*margin-bottom: calc(  var(--m) - var(--s)*0.2885);*/
+    transition: all .1s;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.hex-center {
+    transform: translate(0px, 20px) rotateZ(-90deg);
+}
+
+/*.hex:before {*/
+/*    content: "";*/
+/*    position: fixed;*/
+/*    z-index: 10;*/
+/*    background-image: url("/data/kuba.png");*/
+/*    background-size: cover;*/
+/*    left: 0;*/
+/*    top: 0;*/
+/*    right: 0;*/
+/*    bottom: 0;*/
+/*}*/

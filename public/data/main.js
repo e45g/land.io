@@ -1,8 +1,17 @@
-window.addEventListener("load", () => {
-    const diameter = 7;
-    const space = 6;
+// const URL = "http://localhost:9696";
+// const socket = io(URL, {autoConnect: false});
+// socket.onAny((event, ...args) => {
+//     console.log(event, args);
+// });
+// socket.auth = "stejs";
+// socket.connect();
 
+window.addEventListener("load", () => {
+    const diameter = 20;
+
+    const space = 6;
     const hexW = 50;
+
     const hexH = 58;
 
     const developer = checkDeveloper()
@@ -77,7 +86,7 @@ window.addEventListener("load", () => {
     function QRtoXY({q, r}) {
         return [
             q * (hexH + space) * 0.75, // X
-            r * (-hexW - space) + (q / -2) * (hexW + space) // Y
+            r * (-hexW - space) + (q / -2) * (hexW + space) // Y HAHA trvalo mi to 1 sekundu
         ]
     }
 
@@ -103,6 +112,8 @@ window.addEventListener("load", () => {
         const player = document.createElement("div")
         player.dataset.q = playerHex.dataset.q;
         player.dataset.r = playerHex.dataset.r;
+        player.dataset.facing = "1";
+        player.innerText = developer ? player.dataset.facing : "";
         player.classList.add("player")
         player.id = id;
         player.style.setProperty("--x", x + "px");
@@ -113,32 +124,87 @@ window.addEventListener("load", () => {
                 q: player.dataset.q,
                 r: player.dataset.r,
             });
+
             player.style.setProperty("--x", x + "px");
             player.style.setProperty("--y", y + "px");
         }
 
-        document.addEventListener("keypress", (e) => {
-            console.log(e)
+        const setFacing = (facing) => {
+            if (Number(player.dataset.facing) + facing >= 1 && Number(player.dataset.facing) + facing <= 6) {
+                player.dataset.facing = String(Number(player.dataset.facing) + facing)
+            }else{
+                if(facing < 1) player.dataset.facing = String(Number(player.dataset.facing) + facing + 6)
+                else player.dataset.facing = String(Number(player.dataset.facing) + facing - 6)
+            }
+            
+            player.innerText = developer ? player.dataset.facing : "";
 
+        }
+
+        let prev = false;
+        document.addEventListener("keydown", (e) => {
+            if (prev) {
+                return;
+            }
+            console.log(e)
 
             switch (e.key) {
                 case 'a':
-                    console.log('a')
+                    if (e.shiftKey) {
+                        setFacing(-2)
+                        break;
+                    }
+                    setFacing(-1)
                     break;
 
                 case 'd':
-                    console.log('d')
+                    if (e.shiftKey) {
+                        setFacing(-2)
+                        break;
+                    }
+                    setFacing(1)
                     break;
-
-                case 's':
-                    console.log('s')
-                    break;
-
 
             }
+            prev = true;
+        })
+
+        document.addEventListener("keyup", (e) => {
+            prev = false;
         })
 
         u("#players").append(u(player))
+    }
+
+    function calculateNextPosition({q, r}, facing) {
+        let nextPos = [0, 0]
+        switch (facing) {
+            case 1:
+                nextPos = [q, (r - 1)]
+                break;
+            case 2:
+                nextPos = [(q + 1), (r - 1)]
+                break;
+            case 3:
+                nextPos = [(q + 1), r]
+                break;
+            case 4:
+                nextPos = [q, (r + 1)]
+                break;
+            case 5:
+                nextPos = [(q - 1), (r + 1)]
+                break;
+            case 6:
+                nextPos = [(q - 1), r]
+                break;
+        }
+
+        if (typeof hexesByCoords[nextPos[0] + ";" + nextPos[1]] === "undefined") {
+            return [q, r]
+        }
+
+        return nextPos
+
     }
 
     /***
@@ -166,7 +232,24 @@ window.addEventListener("load", () => {
         unclaimed: hexes
     }
 
-    playerFactory({id: 1, name: "stejs", color: "lightblue"});
+    const playerData = {id: 1, name: "stejs", color: "#F3EFE0"}
+
+    playerFactory(playerData);
+
+
+    setInterval(() => {
+        const player = document.getElementById(playerData.id);
+        const [q, r] = calculateNextPosition({
+            q: Number(player.dataset.q),
+            r: Number(player.dataset.r),
+        }, Number(player.dataset.facing));
+        const [x, y] = QRtoXY({q, r});
+        player.dataset.q = q;
+        player.dataset.r = r;
+        player.style.setProperty("--x", x + "px");
+        player.style.setProperty("--y", y + "px");
+
+    }, 200)
 
 
 })

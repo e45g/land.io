@@ -39,6 +39,28 @@ body {
     bottom: 50%;
 }
 
+.player {
+    --s: 50px;
+    --x: 0px;
+    --y: 0px;
+    position: absolute;
+    left: var(--x);
+    bottom: var(--y);
+    z-index: 999;
+    width: var(--s);
+    height: calc(var(--s) * 1.1547);
+    display: inline-block;
+    font-size: initial;
+    clip-path: polygon(0% 25%, 0% 75%, 50% 100%, 100% 75%, 100% 25%, 50% 0%);
+    background: #37ff00;
+    /*border: rebeccapurple solid 1px;*/
+    transform: translate(-50%, 50%) rotateZ(90deg);
+    /*margin-bottom: calc(  var(--m) - var(--s)*0.2885);*/
+    transition: all .1s;
+    text-align: center;
+    vertical-align: middle;
+}
+
 .hex {
     --s: 50px;
     --x: 0px;
